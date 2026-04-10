@@ -1,4 +1,7 @@
 const {pool,redisClient} = require('../config/db');
+const {SQSClient, SendMessageCommand} = require("@aws-sdk/client-sqs");
+
+const sqsClient = new SQSClient({region: process.env.AWS_REGION});
 
 const getProductoBySku = async (req,res) => {
 	const {sku} = req.params;
@@ -23,19 +26,17 @@ const getProductoBySku = async (req,res) => {
 };
 
 const crearProducto = async (req,res) => {
-	const {sku,nombre,descripcion,precio} = req.body;
 	try{
-		const result = await pool.query(
-			'INSERT INTO productos (sku,nombre,descripcion,precio) VALUES ($1,$2,$3,$4) RETURNING *',
-			[sku,nombre,descripcion,precio]
-		);
-		res.status(201).json({mensaje:'producto creado',producto:result.rows[0]});
+		const nuevoProducto = req.body;
+		const params = {
+			QueueUrl: process.env.SQS_QUEUE_URL,
+			MessageBody: JSON.stringify(nuevoProducto),
+			MessageGroupId: "Inventario-creaciones"
+		};
+		await sqsClient.send(new SendMessageCommand(params));
+		res.status(202).json({mensaje:'producto encolado');
 	}catch(error){
-		console.error(error);
-		if(error.code === '23505'){
-			return res.status(409).json({error:'el sku ya existe'});
-		}
-		res.status(500).json({error:'error al crear el producto'});
+		res.status(500).json({error:'error al encolar el producto'});
 	}
 };
 module.exports = {getProductoBySku,crearProducto};
