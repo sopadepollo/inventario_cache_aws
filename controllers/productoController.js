@@ -34,7 +34,7 @@ const crearProducto = async (req,res) => {
 			MessageGroupId: "Inventario-creaciones"
 		};
 		await sqsClient.send(new SendMessageCommand(params));
-		res.status(202).json({mensaje:'producto encolado');
+		res.status(202).json({mensaje:'producto encolado'});
 	}catch(error){
 		res.status(500).json({error:'error al encolar el producto'});
 	}
