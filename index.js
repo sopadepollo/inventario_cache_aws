@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const {pool, redisClient} = require('./config/db');
+const {writePool, readPool, redisClient} = require('./config/db');
 
 const app = express();
 app.use(express.json()); // Middleware para poder leer JSON en el body
@@ -52,7 +52,7 @@ app.get('/api/productos', async(req,res)=>{
 			queryValue = [limit];
 		}
 		//al armar el texto como los valores, los mandamos con una query del pool
-		const {rows} = await pool.query(queryText, queryValue);
+		const {rows} = await readPool.query(queryText, queryValue);
 		//en caso de que en la longitud de los rows que nos llego sean igual que la longitud mandada a solicitar, eso puede
 		//significar que muy probablemente haya mas datos despues
 		const hayMas = rows.length === limit;
