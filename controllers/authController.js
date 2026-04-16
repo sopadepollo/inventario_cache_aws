@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
-const {pool} = require('../config/db');
+const {readPool, writePool} = require('../config/db');
 
 const registro = async (req,res) => {
 	if(!req.body || !req.body.email || !req.body.password || !req.body.rol_id){
@@ -13,7 +13,7 @@ const registro = async (req,res) => {
 	try{
 		const saltRounds = 10;
 		const passwordHash = await bcrypt.hash(password,saltRounds);
-		const result = await pool.query(
+		const result = await writePool.query(
 			'INSERT INTO usuarios (email,password_hash,rol_id) VALUES ($1,$2,$3) RETURNING id, email',
 			[email,passwordHash,rol_id]
 		);
@@ -34,7 +34,7 @@ const registro = async (req,res) => {
 const login = async (req,res) => {
 	const {email,password} = req.body;
 	try{
-		const result = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+		const result = await readPool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
 		if(result.rows.length === 0){
 			return res.status(401).json({error:'Credenciales invalidas'});
 		}

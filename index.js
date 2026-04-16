@@ -18,7 +18,7 @@ app.use('/api/inventario', inventarioRoutes);
 app.get('/ping', async (req, res) => {
   try {
     // Probamos leer la fecha actual desde Postgres
-    const pgRes = await pool.query('SELECT NOW()');
+    const pgRes = await readPool.query('SELECT NOW()');
     
     // Probamos escribir y leer en Redis
     await redisClient.set('prueba_cache', '¡Redis está vivo!');

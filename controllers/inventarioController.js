@@ -1,9 +1,9 @@
-const {pool,redisClient} = require('../config/db'); 
+const {writePool,redisClient} = require('../config/db'); 
 
 const registrarMovimiento = async (req,res) => {
 	const {sku,cantidad,tipo_movimiento,motivo} = req.body;
 	const usuario_id = req.usuario.id;
-	const client = await pool.connect();
+	const client = await writePool.connect();
 
 	try{
 		await client.query('BEGIN');	
