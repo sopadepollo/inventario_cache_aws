@@ -35,4 +35,14 @@ const crearProducto = async (req,res) => {
 		res.status(500).json({error:'error al encolar el producto'});
 	}
 };
+
+const actualizarProducto = async (req, res) => {
+	try{
+		const payload = {sku: req.params.sku, ...req.body};
+		await enviarACola('ACTUALIZAR_PRODUCTO', payload);
+		res.status(202).json({error:'Actualizacion encolada'});
+	}catch(error){
+		res.status(500).json({error:'Error al encolar la actualizacion'});
+	}
+};
 module.exports = {getProductoBySku,crearProducto};
