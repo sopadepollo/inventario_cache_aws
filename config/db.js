@@ -20,7 +20,8 @@ const readPool = new Pool({
 
 
 const redisClient = createClient({
-	url: 'redis://localhost:6379'
+	url: process.env.REDIS_URL
+//'redis://localhost:6379'
 });
 
 redisClient.on('error', (err) => console.log('error en redis: ',err));
