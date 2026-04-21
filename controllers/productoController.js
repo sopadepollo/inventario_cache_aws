@@ -45,4 +45,4 @@ const actualizarProducto = async (req, res) => {
 		res.status(500).json({error:'Error al encolar la actualizacion'});
 	}
 };
-module.exports = {getProductoBySku,crearProducto};
+module.exports = {getProductoBySku,crearProducto, actualizarProducto};
