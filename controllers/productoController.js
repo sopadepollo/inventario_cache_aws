@@ -29,8 +29,7 @@ const getProductoBySku = async (req,res) => {
 
 const crearProducto = async (req,res) => {
 	try{
-		const payload = {req.body};
-		await enviarACola('CREAR_PRODUCTO', payload);
+		await enviarACola('CREAR_PRODUCTO', req.body);
 		res.status(202).json({mensaje:'producto encolado'});
 	}catch(error){
 		res.status(500).json({error:'error al encolar el producto'});
